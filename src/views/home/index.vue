@@ -1,19 +1,19 @@
 <template>
-   <div>
-       <p>Login component</p>
-   </div>
+    <div>
+      <p>Home Component</p>
+    </div>
 </template>
 
 <script>
 export default {
-    name:'AppLogin',
+    name:'AppHome',
     data(){
         return {}
     }
+
 }
 </script>
 
 <style lang="scss" scoped>
 
 </style>
-

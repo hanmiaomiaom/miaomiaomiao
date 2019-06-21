@@ -1,7 +1,5 @@
 <template>
-  <div id="app">
-    <p><i class="iconfont iconapple1"></i> Component</p>
-  </div>
+<router-view/>
 </template>
 
 <script>
