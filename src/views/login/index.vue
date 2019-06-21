@@ -60,14 +60,28 @@ export default {
           product: 'bind' // 隐藏，直接弹出式
         }),
         function(captchaObj) {
-          captchaObj
-            .onReady(function() {
-              // 验证码ready之后才能调用verify方法显示验证码
+          captchaObj.onReady(function() {
+            // 验证码ready之后才能调用verify方法显示验证码
+          }).onSuccess(function() {
+            // your code
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate } =
+                captchaObj.getValidate()
+
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`,
+              params: {
+                challenge,
+                validate,
+                seccode
+              }
+            }).then(res => {
+
             })
-            .onSuccess(function() {
-              // your code
-              console.log(captchaObj.getValidate)
-            })
+          })
             .onError(function() {
               // your code
             })
