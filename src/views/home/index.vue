@@ -6,10 +6,10 @@
 
 <script>
 export default {
-    name:'AppHome',
-    data(){
-        return {}
-    }
+  name: 'AppHome',
+  data() {
+    return {}
+  }
 
 }
 </script>

@@ -12,5 +12,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+#app {
+  height: 100%;
+}
 </style>

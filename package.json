@@ -25,5 +25,8 @@
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "vue-template-compiler": "^2.6.10"
+  },
+  "script":{
+    "lint": "eslint --fix --ext .js,.vue src test/unit"
   }
 }
