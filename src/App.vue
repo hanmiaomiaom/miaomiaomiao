@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <p>App Component</p>
+    <p><i class="iconfont iconapple1"></i> Component</p>
   </div>
 </template>
 
 <script>
 export default {
-  name:'App',
-  data () {
+  name: 'App',
+  data() {
     return {}
   }
 }
