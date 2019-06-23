@@ -16,7 +16,7 @@
       class="form-content"
       ref="form"
       :model="form"
-      rules="rules">
+      :rules="rules">
         <el-form-item prop="mobile">
           <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
@@ -29,6 +29,10 @@
             <!-- <el-button>获取验证码</el-button> -->
             <el-button @click="handleSendCode">获取验证码</el-button>
           </el-col>
+        </el-form-item>
+        <el-form-item prop="agree">
+          <el-checkbox class="checkbox" v-model="form.agree"></el-checkbox>
+          <span class="agree-text">我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
         </el-form-item>
         <el-form-item>
           <el-button class="btn-login" type="primary" @click="handleLogin">立即登录</el-button>
@@ -46,16 +50,22 @@ export default {
     return {
       form: {
         mobile: '',
-        code: ''
+        code: '',
+        // code:'',
+        agree: ''
       },
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
-          { pattern: /\d{11}/, message: '请输入有效的手机号码', trigger: 'blur' }
+          { pattern: /^\d{11}$/, message: '请输入有效的手机号码', trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
-          { pattern: /\d{6}/, message: '请输入有效验证码', trigger: 'blur' }
+          { pattern: /^\d{4,6}$/, message: '请输入有效验证码', trigger: 'blur' }
+        ],
+        agree: [
+          { required: true, message: '请同意用户协议' },
+          { pattern: /true/, message: '请同意用户协议' }
         ]
       }
     }
@@ -157,8 +167,15 @@ export default {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    .btn-login {
-      width: 100%;
+  .agree-checkbox {
+      margin-right: 10px;
+    }
+  .agree-text {
+      font-size: 16px;
+      color: #999;
+}
+  .btn-login {
+      width: 100%
     }
   }
 }
