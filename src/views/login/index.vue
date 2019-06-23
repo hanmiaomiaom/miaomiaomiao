@@ -20,7 +20,7 @@
           </el-col>
         </el-form-item>
         <el-form-item>
-          <el-button class="btn-login" type="primary" @click="onSubmit">立即登录</el-button>
+          <el-button class="btn-login" type="primary" @click="handleLogin">立即登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -41,8 +41,23 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
-      constants.log('submit!')
+    handleLogin() {
+      axios({
+        method: 'POST',
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        data: this.form
+      }).then(res => {
+        console.log(res.data)
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push({
+          name: 'home'
+        })
+      }).catch((e) => {
+        this.$message.error('登录失败，手机号或验证码错误')
+      })
     },
     handleSendCode() {
       const { mobile } = this.form
@@ -58,41 +73,34 @@ export default {
           offline: !data.success,
           new_captcha: data.new_captcha,
           product: 'bind' // 隐藏，直接弹出式
-        }),
-        function(captchaObj) {
+        }, (captchaObj) => {
           captchaObj.onReady(function() {
             // 验证码ready之后才能调用verify方法显示验证码
+            captchaObj.verify()
           }).onSuccess(function() {
-            // your code
+            // 人机交互验证通过
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
               geetest_validate: validate } =
-                captchaObj.getValidate()
+              captchaObj.getValidate()
 
             axios({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`,
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
               params: {
                 challenge,
                 validate,
                 seccode
               }
             }).then(res => {
-
+              console.log(res.data)
+              // 开启倒计时效果
             })
+          }).onError(function() {
+            // your code
           })
-            .onError(function() {
-              // your code
-            })
-            // 在这里注册‘发送验证码’按钮的点击事件，然后验证用户是否输入手机号以及手机号格式是否正确，没有问题：
-            // button.click = function() {
-            //   // some code
-            //   // 检测验证码是否ready, 验证码的onReady是否执行
-            //   captchaObj.verify(); //显示验证码
-            //   // some code
-            // }
-        }
+        })
       })
     }
   }
