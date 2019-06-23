@@ -5,11 +5,22 @@
       <div class="form-head">
         <img src="./logo_index.png" alt="黑马头条号">
       </div>
-      <el-form class="form-content" ref="form" :model="form">
-        <el-form-item>
+      <!-- 配置校验规则
+          rules  规则对象配置到el-form 上
+          prop 校验字段配置到 el-form-item 上,rules 中配置的校验字段必须和表单数据对象保持一致
+      JavaScript  触发验证
+          给el-form 添加ref
+          调用this.$refs['ref名字'].validate(valid=>{})触发验证
+       -->
+      <el-form
+      class="form-content"
+      ref="form"
+      :model="form"
+      rules="rules">
+        <el-form-item prop="mobile">
           <el-input v-model="form.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <!-- el-col 栅格布局，一共24列，:span用来指定占用的大小，:offset 用来指定便宜量 -->
           <el-col :span="14">
             <el-input v-model="form.code" placeholder="请输入验证码"></el-input>
@@ -26,7 +37,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios'
 import '@/vendor/gt' // 引入极验JavaScript SDK文件，通过window.initGeetest 使用
@@ -37,11 +47,31 @@ export default {
       form: {
         mobile: '',
         code: ''
+      },
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { pattern: /\d{11}/, message: '请输入有效的手机号码', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { pattern: /\d{6}/, message: '请输入有效验证码', trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
     handleLogin() {
+      // 使用 form 组件的 validate 方法触发校验，获取校验的结果状态
+      this.$refs['form'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        // 表单验证通过，提交登录请求
+        this.submitLogin()
+      })
+    },
+    submitLogin() {
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
