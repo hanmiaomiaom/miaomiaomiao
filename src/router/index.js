@@ -5,13 +5,18 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    // {
+    //   name: 'home',
+    //   path: '/',
+    //   // 在整个项目里，模块路径中 @ 表示的是 src 目录
+    //   // 无论你当前模块在哪里， @ 都可以直接点位到src
+    //   // 加载一个目录就可以默认加载他的index.js\indexedDB.vue\indexedDB.son
+    //   component: () => import('@/views/home')
+    // },
     {
-      name: 'home',
-      path: '/',
-      // 在整个项目里，模块路径中 @ 表示的是 src 目录
-      // 无论你当前模块在哪里， @ 都可以直接点位到src
-      // 加载一个目录就可以默认加载他的index.js\indexedDB.vue\indexedDB.son
-      component: () => import('@/views/home')
+      name:'layout',
+      path:'/',
+      component:()=> import('@/views/layout')
     },
     {
       name: 'login',
