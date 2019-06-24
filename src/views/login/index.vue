@@ -27,7 +27,9 @@
           </el-col>
           <el-col :offset="1" :span="9">
             <!-- <el-button>获取验证码</el-button> -->
-            <el-button @click="handleSendCode">获取验证码</el-button>
+            <el-button
+            @click="handleSendCode"
+            :disabled="!!codeTimer">{{codeTimer ? `剩余${codeTimeSeconds}秒`: `获取验证码`}}</el-button>
           </el-col>
         </el-form-item>
         <el-form-item prop="agree">
@@ -44,31 +46,34 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt' // 引入极验JavaScript SDK文件，通过window.initGeetest 使用
+const initCodeTimeSeconds = 60 // 初始化定时器的
 export default {
   name: 'AppLogin',
   data() {
     return {
-      form: {
+      form: {// 表单数据对象
         mobile: '',
         code: '',
-        // code:'',
         agree: ''
       },
-      rules: {
+      rules: {// 验证规则对象
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
-          { pattern: /^\d{11}$/, message: '请输入有效的手机号码', trigger: 'blur' }
+          { pattern: /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/, message: '请输入有效的手机号码', trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
-          { pattern: /^\d{4,6}$/, message: '请输入有效验证码', trigger: 'blur' }
+          { pattern: /^\d{6}$/, message: '请输入有效验证码', trigger: 'blur' }
         ],
         agree: [
           { required: true, message: '请同意用户协议' },
           { pattern: /true/, message: '请同意用户协议' }
         ]
-      }
+      },
+      codeTimer: null, // 倒计时定时器
+      codeTimeSeconds: initCodeTimeSeconds // 倒计时事件
     }
+      
   },
   methods: {
     handleLogin() {
@@ -100,6 +105,17 @@ export default {
       })
     },
     handleSendCode() {
+      // 验证手机号是否有效
+      this.$refs['form'].validateField('mobile', errorMessage => {
+        if (errorMessage.trim().length > 0) { // validateField()方法返回一个字符串，若字符串长度为0，则证明输入手机号正确，往下执行，若字符串长度大于0，则证明手机号不对，返回，不再往下执行
+          return
+        }
+        // 验证通过，初始化显示验证码
+        this.showGeetest()
+      })
+    },
+    // 验证通过，初始化显示人机交互验证码
+    showGeetest() {
       const { mobile } = this.form
       axios({
         method: 'GET',
@@ -114,16 +130,16 @@ export default {
           new_captcha: data.new_captcha,
           product: 'bind' // 隐藏，直接弹出式
         }, (captchaObj) => {
-          captchaObj.onReady(function() {
+          captchaObj.onReady(() => {
             // 验证码ready之后才能调用verify方法显示验证码
             captchaObj.verify()
-          }).onSuccess(function() {
+          }).onSuccess(() => {
             // 人机交互验证通过
             const {
               geetest_challenge: challenge,
               geetest_seccode: seccode,
               geetest_validate: validate } =
-              captchaObj.getValidate()
+                  captchaObj.getValidate()
 
             axios({
               method: 'GET',
@@ -135,16 +151,32 @@ export default {
               }
             }).then(res => {
               console.log(res.data)
-              // 开启倒计时效果
+              // 发送短信成功，开启倒计时效果
+              this.codeCountDown()
             })
           }).onError(function() {
             // your code
           })
         })
       })
+    },
+    // 验证码倒计时
+    codeCountDown() {
+      this.codeTimer = window.setInterval(() => {
+        this.codeTimeSeconds--
+        if (this.codeTimeSeconds <= 0) {
+          // 清除定时器
+          window.clearInterval(this.codeTimer)
+          // 让倒计时的时间回归初始状态
+          this.codeTimeSeconds = initCodeTimeSeconds
+          // 将存储定时器引用的变量重新赋值为null
+          this.codeTimer = null
+        }
+      }, 1000)
     }
   }
 }
+
 </script>
 <style lang="less" scoped>
 .login-wrap {
