@@ -73,7 +73,6 @@ export default {
       codeTimer: null, // 倒计时定时器
       codeTimeSeconds: initCodeTimeSeconds // 倒计时事件
     }
-      
   },
   methods: {
     handleLogin() {

@@ -6,12 +6,12 @@
 
 <script>
 export default {
-    name:'AppHeader',
-    data () {
-        return {
+  name: 'AppHeader',
+  data() {
+    return {
 
-        }
     }
+  }
 }
 </script>
 
