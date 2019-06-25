@@ -1,13 +1,18 @@
 <template>
   <el-container>
   <el-aside width="200px">
+    <!-- 侧边栏 -->
     <AppAside/>
   </el-aside>
   <el-container>
     <el-header>
+       <!-- 头部 -->
       <AppHeader/>
     </el-header>
-    <el-main>Main</el-main>
+    <el-main>
+      <!-- home 发布文章、文章列表，评论，，，，等等，都显示都这里 -->
+      <router-view/>
+    </el-main>
   </el-container>
 </el-container>
 
