@@ -9,7 +9,8 @@
         18531151201<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item >用户设置</el-dropdown-item>
+        <el-dropdown-item >个人地址</el-dropdown-item>
+        <el-dropdown-item >git地址</el-dropdown-item>
         <el-dropdown-item >退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
