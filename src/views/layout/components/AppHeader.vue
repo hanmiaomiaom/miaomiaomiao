@@ -23,10 +23,10 @@ export default {
   name: 'AppHeader',
   data() {
     return {
-      userInfo:{}
+      userInfo: {}
     }
   },
-  created () {
+  created() {
     // 读取数据
     this.userInfo = JSON.parse(window.localStorage.getItem('user_info')) || {
       name: '18531151201',

@@ -49,19 +49,19 @@
 
 <script>
 export default {
-  name: "AppAside",
+  name: 'AppAside',
   data() {
-    return {};
+    return {}
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      console.log(key, keyPath)
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>

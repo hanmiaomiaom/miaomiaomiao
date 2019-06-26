@@ -94,7 +94,7 @@ export default {
         console.log(res.data)
         const userInfo = res.data.data
         // 存储到本地
-        window.localStorage.setItem('user_info',JSON.stringify(userInfo))
+        window.localStorage.setItem('user_info', JSON.stringify(userInfo))
         this.$message({
           message: '登录成功',
           type: 'success'
