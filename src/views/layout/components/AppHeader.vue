@@ -4,9 +4,9 @@
   <el-col :span="5" :offset="14">
     <el-dropdown trigger="click">
    <span>消息</span>
-   <img  class="img" width="30px" src="http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi" alt="">
+   <img  class="img" width="30px" src="userInfo.photo">
       <span class="el-dropdown-link">
-        18531151201<i class="el-icon-arrow-down el-icon--right"></i>
+       {{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item >个人地址</el-dropdown-item>
@@ -23,8 +23,12 @@ export default {
   name: 'AppHeader',
   data() {
     return {
-
+      userInfo:{}
     }
+  },
+  created () {
+    // 读取数据
+    this.userInfo = JSON.parse(window.localStorage.getItem('user_info'))
   }
 }
 </script>
