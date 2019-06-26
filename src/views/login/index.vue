@@ -88,7 +88,7 @@ export default {
     submitLogin() {
       axios({
         method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',
         data: this.form
       }).then(res => {
         console.log(res.data)

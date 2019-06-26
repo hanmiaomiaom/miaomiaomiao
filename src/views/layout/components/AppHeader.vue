@@ -1,11 +1,11 @@
 <template>
-  <el-row :gutter="20">
+  <el-row class="app-header" :gutter="10">
   <el-col :span="5">江苏传智播客教育科技股份有限公司<div class="grid-content bg-purple"></div></el-col>
   <el-col :span="5" :offset="14">
     <el-dropdown trigger="click">
-   <span>消息</span>
-   <img  class="img" width="30px" src="userInfo.photo">
+      <span>消息</span>
       <span class="el-dropdown-link">
+        <img :src="userInfo.photo" width="30px">
        {{userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
@@ -28,15 +28,17 @@ export default {
   },
   created () {
     // 读取数据
-    this.userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+    this.userInfo = JSON.parse(window.localStorage.getItem('user_info')) || {
+      name: '18531151201',
+      photo: 'http://toutiao.meiduo.site/Fkj6tQi3xJwVXi1u2swCElotfdCi'
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.img {
-  border-radius: 50%;
-  margin-left: 10px;
-  margin-right: 10px;
-}
+  img {
+    border-radius: 50%;
+  }
+
 </style>
