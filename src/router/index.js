@@ -14,7 +14,7 @@ export default new Router({
     //   component: () => import('@/views/home')
     // },
     {// layout 是显示到 App 根组件的路由出口
-      // name: 'layout', // 使用Javascript 命名路由导航不会默认渲染子路由
+      name: 'layout', // 使用Javascript 命名路由导航不会默认渲染子路由
       path: '/',
       component: () => import('@/views/layout'),
       // 嵌套路由：
