@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     // {
     //   name: 'home',
@@ -40,3 +40,39 @@ export default new Router({
     }
   ]
 })
+
+/*
+全局前置守卫：
+当访问路由页面时，会先进入这里
+to --- 要去哪里的相关数据
+from --来自哪里的相关数据
+next -- 允许通过的方法
+*/ 
+
+router.beforeEach((to,from,next)=>{
+  //路由导航前，开启进度条
+  // nprogress.start()
+  // 获取数据
+  const userInfo = window.localStorage.getItem('user_info') 
+  // 判断 在去往登录页面的情况下，
+  if(to.path ==='/login') {
+    // 判断：如果有登录信息，则不能去login页面
+    if (userInfo) {
+      
+    }else {
+      // 如果没有登录信息，则去登录页面登录
+      next()
+    }
+  }else {
+    //若不处于登录页面的情况下
+    // 如果有登录信息，不能去login页面
+    if(userInfo) {
+      next()
+    }else {
+      // 如果没有登录信息，则必须去登录页面登录
+      next ({ path: '/login' })
+      // window.location.reload()
+    }
+  }
+})
+export default router ;//导出

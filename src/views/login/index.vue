@@ -100,7 +100,7 @@ export default {
           type: 'success'
         })
         this.$router.push({
-          name: 'home'
+          name: 'layout'
         })
       }).catch((e) => {
         this.$message.error('登录失败，手机号或验证码错误')

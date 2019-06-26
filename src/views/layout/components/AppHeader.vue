@@ -1,5 +1,5 @@
 <template>
-  <el-row class="app-header" :gutter="10">
+  <el-row class="app-header" :gutter="20">
   <el-col :span="5">江苏传智播客教育科技股份有限公司<div class="grid-content bg-purple"></div></el-col>
   <el-col :span="5" :offset="14">
     <el-dropdown trigger="click">
