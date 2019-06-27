@@ -33,7 +33,7 @@
           </el-col>
         </el-form-item>
         <el-form-item prop="agree">
-          <el-checkbox class="checkbox" v-model="form.agree"></el-checkbox>
+          <el-checkbox class="checkbox"  checked="checked" v-model="form.agree"></el-checkbox>
           <span class="agree-text">我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
         </el-form-item>
         <el-form-item>
@@ -46,6 +46,7 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt' // 引入极验JavaScript SDK文件，通过window.initGeetest 使用
+import { saveUser } from '@/utils/auth'//按需加载，加载模块中非 export default成员
 const initCodeTimeSeconds = 60 // 初始化定时器的
 export default {
   name: 'AppLogin',
@@ -88,13 +89,15 @@ export default {
     submitLogin() {
       axios({
         method: 'POST',
-        url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',
+        // url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',//内网接口
+        url:'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',//外网接口  统一密码：246810
         data: this.form
       }).then(res => {
         console.log(res.data)
         const userInfo = res.data.data
         // 存储到本地
-        window.localStorage.setItem('user_info', JSON.stringify(userInfo))
+        saveUser(userInfo)
+        // window.localStorage.setItem('user_info', JSON.stringify(userInfo))
         this.$message({
           message: '登录成功',
           type: 'success'
