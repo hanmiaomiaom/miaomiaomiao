@@ -47,7 +47,6 @@
 import axios from 'axios'
 import '@/vendor/gt' // 引入极验JavaScript SDK文件，通过window.initGeetest 使用
 import { saveUser } from '@/utils/auth'// 按需加载，加载模块中非 export default成员
-import { async } from 'q'
 const initCodeTimeSeconds = 60 // 初始化定时器的
 export default {
   name: 'AppLogin',
@@ -87,14 +86,14 @@ export default {
         this.submitLogin()
       })
     },
-    async submitLogin() {
-      try {
-        const res = await this.$http({
-          method: 'POST',
-          // url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',//内网接口
-          url: '/authorizations', // 外网接口  统一密码：246810
-          data: this.form
-        })
+    submitLogin() {
+      axios({
+        method: 'POST',
+        // url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',//内网接口
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations', // 外网接口  统一密码：246810
+        data: this.form
+      }).then(res => {
+        console.log(res.data)
         const userInfo = res.data.data
         // 存储到本地
         saveUser(userInfo)
@@ -106,9 +105,9 @@ export default {
         this.$router.push({
           name: 'layout'
         })
-      } catch (err) {
+      }).catch((e) => {
         this.$message.error('登录失败，手机号或验证码错误')
-      }
+      })
     },
     handleSendCode() {
       // 验证手机号是否有效
@@ -121,45 +120,48 @@ export default {
       })
     },
     // 验证通过，初始化显示人机交互验证码
-    async showGeetest() {
+    showGeetest() {
       const { mobile } = this.form
-
-      const res = await this.$http({
+      axios({
         method: 'GET',
-        url: `/captchas/${mobile}`
-      })
-
-      const { data } = res.data
-      window.initGeetest({
-        // 以下配置参数来自服务端 SDK
-        gt: data.gt,
-        challenge: data.challenge,
-        offline: !data.success,
-        new_captcha: data.new_captcha,
-        product: 'bind' // 隐藏，直接弹出式
-      }, (captchaObj) => {
-        captchaObj.onReady(() => {
-          // 验证码ready之后才能调用verify方法显示验证码
-          captchaObj.verify()
-        }).onSuccess(async() => {
-          // 人机交互验证通过
-          const {
-            geetest_challenge: challenge,
-            geetest_seccode: seccode,
-            geetest_validate: validate } =
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+      }).then(res => {
+        const { data } = res.data
+        window.initGeetest({
+          // 以下配置参数来自服务端 SDK
+          gt: data.gt,
+          challenge: data.challenge,
+          offline: !data.success,
+          new_captcha: data.new_captcha,
+          product: 'bind' // 隐藏，直接弹出式
+        }, (captchaObj) => {
+          captchaObj.onReady(() => {
+            // 验证码ready之后才能调用verify方法显示验证码
+            captchaObj.verify()
+          }).onSuccess(() => {
+            // 人机交互验证通过
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate } =
                   captchaObj.getValidate()
-          // 发送短信
-          await this.$http({
-            method: 'GET',
-            url: `/sms/codes/${mobile}`,
-            params: {
-              challenge,
-              validate,
-              seccode
-            }
+
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              params: {
+                challenge,
+                validate,
+                seccode
+              }
+            }).then(res => {
+              console.log(res.data)
+              // 发送短信成功，开启倒计时效果
+              this.codeCountDown()
+            })
+          }).onError(function() {
+            // your code
           })
-          // 发送短信成功，开启倒计时效果
-          this.codeCountDown()
         })
       })
     },

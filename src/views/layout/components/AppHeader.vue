@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getUser,removeUser } from '@/utils/auth'
+import { getUser, removeUser } from '@/utils/auth'
 export default {
   name: 'AppHeader',
   data() {
