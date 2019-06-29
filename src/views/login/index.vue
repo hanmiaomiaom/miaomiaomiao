@@ -89,13 +89,13 @@ export default {
     },
     async submitLogin() {
       try {
-        const res = await this.$http({
+        const userInfo = await this.$http({
           method: 'POST',
           // url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',//内网接口
           url: '/authorizations', // 外网接口  统一密码：246810
           data: this.form
         })
-        const userInfo = res.data.data
+        // const userInfo = res.data.data
         // 存储到本地
         saveUser(userInfo)
         // window.localStorage.setItem('user_info', JSON.stringify(userInfo))
@@ -124,12 +124,12 @@ export default {
     async showGeetest() {
       const { mobile } = this.form
 
-      const res = await this.$http({
+      const data = await this.$http({
         method: 'GET',
         url: `/captchas/${mobile}`
       })
 
-      const { data } = res.data
+      // const { data } = res.data
       window.initGeetest({
         // 以下配置参数来自服务端 SDK
         gt: data.gt,

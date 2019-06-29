@@ -26,30 +26,35 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
  * config 是本次请求相关配置对象
  */
 // 添加请求拦截器
-axios.interceptors.request.use( config => {
+axios.interceptors.request.use(config => {
   const user = getUser()
   // 如果有user数据，则往本次请求中添加用户 token
-  if(user) {
+  if (user) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
-  return config;//是允许请求发送的开关，我们可以在这里之前进行一些业务逻辑操作
+  return config// 是允许请求发送的开关，我们可以在这里之前进行一些业务逻辑操作
 }, error => {
   // 对请求错误做些什么
-  return Promise.reject(error);
-});
+  return Promise.reject(error)
+})
 
 /**
  * Axios 响应拦截器： axios 收到的影响会先经过这里
  */
 // 添加响应拦截器
-axios.interceptors.response.use(function (response) {
-  // 对响应数据做点什么
-  return response;
-}, function (error) {
+axios.interceptors.response.use(response => {
+  // response  响应结果对象
+  // 这里将 response 原样返回，那么发送请求的地方收到的就是 response
+  // 我们可以利用逻辑操作控制请求收到的响应数据格式
+  if (typeof response.data === 'object' && response.data.data) {
+    return response.data.data
+  } else {
+    return response.data
+  }
+}, error => {
   // 对响应错误做点什么
-  return Promise.reject(error);
-});
-
+  return Promise.reject(error)
+})
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false

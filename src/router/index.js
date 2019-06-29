@@ -32,8 +32,8 @@ const router = new Router({
           component: () => import('@/views/publish')
         },
         {
-          name:'article',
-          path:'/article',
+          name: 'article',
+          path: '/article',
           component: () => import('@/views/article')
         }
       ]
