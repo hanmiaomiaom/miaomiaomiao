@@ -11,7 +11,7 @@ import router from './router'
 // 引入公共样式文件，最好在element 样式文件之后，可以自定义修改elment 内置样式
 import './styles/index.less'
 // 引入获取元素的封装方法
-import { getUser } from '@/utils/auth'
+import { getUser, removeUser } from '@/utils/auth'
 
 // 给Vue原型对象扩展成员时，最好加上一个$前缀，避免和组件内部的数据成员冲突
 Vue.prototype.$http = axios
@@ -31,6 +31,7 @@ axios.interceptors.request.use(config => {
   // 如果有user数据，则往本次请求中添加用户 token
   if (user) {
     config.headers.Authorization = `Bearer ${user.token}`
+    // config.headers.Authorization = `Bearer 123`//用于测试无效token
   }
   return config// 是允许请求发送的开关，我们可以在这里之前进行一些业务逻辑操作
 }, error => {
@@ -46,13 +47,22 @@ axios.interceptors.response.use(response => {
   // response  响应结果对象
   // 这里将 response 原样返回，那么发送请求的地方收到的就是 response
   // 我们可以利用逻辑操作控制请求收到的响应数据格式
-  if (typeof response.data === 'object' && response.data.data) {
+  if (typeof response.data === 'object' && response.data.data) { // 大于等于200且小于等于400的状态码在这里显示
     return response.data.data
   } else {
     return response.data
   }
-}, error => {
+}, error => { // 大于401的状态码会显示在这里
   // 对响应错误做点什么
+  // 如果用户的token无效，让其跳转到登录页面
+  if (error.response.status === 401) {
+    // 清除本地存储中无效的token用户信息
+    removeUser()
+    // 跳转到用户登录页面
+    router.push({
+      name: 'login'
+    })
+  }
   return Promise.reject(error)
 })
 
