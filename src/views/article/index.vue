@@ -18,7 +18,7 @@
     <span>一共有xxx条数据</span>
     <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
   </div>
-  <!-- 
+  <!--
    table 表格不需要我们自己手动 v-for 遍历
     只需要将数组数据交给table 表格的data 属性就可以了
     然后配置el-table-column 表格列组件即可
@@ -32,7 +32,7 @@
     class="article-list"
     :data="articles"
     style="width:100%"
-   
+
     >
     <el-table-column
       label="封面"
@@ -74,11 +74,11 @@
      label="操作">
     <template>
       <el-button size="mini" type="primary" plain>修改</el-button>
-      <el-button size="mini" type="danger" plain>删除</el-button> 
+      <el-button size="mini" type="danger" plain>删除</el-button>
     </template>
     </el-table-column>
       </el-table>
-      <!-- 数据分页 
+      <!-- 数据分页
       page-size 配置每页大小，默认是10
       total 用来配置总记录数
       分页组件会根据每页大小和总记录数进行分页
@@ -90,7 +90,7 @@
     :total="totalCount"
     :disabled="articleLoading"
     @current-change="handleCurrentChange"
-    > 
+    >
   </el-pagination>
   <!-- 数据分页 -->
 </el-card>
@@ -105,33 +105,33 @@ export default {
   name: 'ArticleList',
   data() {
     return {
-     articles:[],
-     statTypes:[
-       {
-         type:'info',
-         label:'草稿'
-       },
-       {
-         type:'',
-         label:'待审核'
-       },
-       {
-         type:'sunccess',
-         label:'审核通过'
-       },
-       {
-         type:'warning',
-         label:'审核失败'
-       },
-       {
-         type:'danger',
-         label:'已删除'
-       },
-     ],
-     pageSize:10,//每页大小
-     totalCount:0,//总数据量
-     page:1,//当前页码
-     articleLoading:false//加载中
+      articles: [],
+      statTypes: [
+        {
+          type: 'info',
+          label: '草稿'
+        },
+        {
+          type: '',
+          label: '待审核'
+        },
+        {
+          type: 'sunccess',
+          label: '审核通过'
+        },
+        {
+          type: 'warning',
+          label: '审核失败'
+        },
+        {
+          type: 'danger',
+          label: '已删除'
+        }
+      ],
+      pageSize: 10, // 每页大小
+      totalCount: 0, // 总数据量
+      page: 1, // 当前页码
+      articleLoading: false// 加载中
     }
   },
   created() {
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     async loadAtricles() {
-      //请求开始，加载loading
+      // 请求开始，加载loading
       this.articleLoading = true
       // const token = getUser().token
       // 除了登录相关接口之后，其他接口都必须在请求头中通过Authorzation 字段提供给用户 token
@@ -147,10 +147,10 @@ export default {
       const data = await this.$http({
         method: 'GET',
         url: '/articles',
-        params:{
+        params: {
           // 放参数
-          page:this.page,//页码
-          per_page:this.pageSize//每页大小
+          page: this.page, // 页码
+          per_page: this.pageSize// 每页大小
         }
       })
       this.articles = data.results

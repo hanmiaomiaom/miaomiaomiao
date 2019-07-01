@@ -52,7 +52,7 @@ axios.interceptors.response.use(response => {
   } else {
     return response.data
   }
-}, error => { // 大于401的状态码会显示在这里
+}, error => { // 大于400的状态码会显示在这里
   // 对响应错误做点什么
   // 如果用户的token无效，让其跳转到登录页面
   if (error.response.status === 401) {

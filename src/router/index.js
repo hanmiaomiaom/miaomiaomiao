@@ -61,11 +61,11 @@ router.beforeEach((to, from, next) => {
   // 获取数据
   const userInfo = getUser()
   // const userInfo = window.localStorage.getItem('user_info')
-  // 判断 在处于登录页面的情况下，                                                   
+  // 判断 在处于登录页面的情况下，
   if (to.path === '/login') {
     // 判断：如果有登录信息，则不能去login页面
     if (userInfo) {
-      if (from.path === '/login'){
+      if (from.path === '/login') {
         nprogress.done()
       }
     } else {

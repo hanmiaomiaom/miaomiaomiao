@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="login-wrap">
     <div class="form-wrap">
       <!-- 给组件加class，会把这个class作用到组件的根元素上 -->
@@ -29,7 +29,8 @@
             <!-- <el-button>获取验证码</el-button> -->
             <el-button
             @click="handleSendCode"
-            :disabled="!!codeTimer">{{codeTimer ? `剩余${codeTimeSeconds}秒`: `获取验证码`}}</el-button>
+            :disabled="!!codeTimer"
+            :loading="codeLoading">{{codeTimer ? `剩余${codeTimeSeconds}秒`: `获取验证码`}}</el-button>
           </el-col>
         </el-form-item>
         <el-form-item prop="agree">
@@ -37,7 +38,11 @@
           <span class="agree-text">我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
         </el-form-item>
         <el-form-item>
-          <el-button class="btn-login" type="primary" @click="handleLogin">立即登录</el-button>
+          <el-button
+          class="btn-login"
+          type="primary"
+          @click="handleLogin"
+          :loading="loginLoading">立即登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -73,7 +78,9 @@ export default {
         ]
       },
       codeTimer: null, // 倒计时定时器
-      codeTimeSeconds: initCodeTimeSeconds // 倒计时事件
+      codeTimeSeconds: initCodeTimeSeconds, // 倒计时事件
+      loginLoading: false, // 登录中 loading
+      codeLoading: false
     }
   },
   methods: {
@@ -88,6 +95,7 @@ export default {
       })
     },
     async submitLogin() {
+      this.loginLoading = true
       try {
         const userInfo = await this.$http({
           method: 'POST',
@@ -109,6 +117,7 @@ export default {
       } catch (err) {
         this.$message.error('登录失败，手机号或验证码错误')
       }
+      this.loginLoading = false
     },
     handleSendCode() {
       // 验证手机号是否有效
@@ -122,46 +131,60 @@ export default {
     },
     // 验证通过，初始化显示人机交互验证码
     async showGeetest() {
-      const { mobile } = this.form
+      try {
+        this.codeLoading = true
+        // 任何函数中的function 函数内部的this指向window
+        const { mobile } = this.form
 
-      const data = await this.$http({
-        method: 'GET',
-        url: `/captchas/${mobile}`
-      })
-
-      // const { data } = res.data
-      window.initGeetest({
-        // 以下配置参数来自服务端 SDK
-        gt: data.gt,
-        challenge: data.challenge,
-        offline: !data.success,
-        new_captcha: data.new_captcha,
-        product: 'bind' // 隐藏，直接弹出式
-      }, (captchaObj) => {
-        captchaObj.onReady(() => {
-          // 验证码ready之后才能调用verify方法显示验证码
-          captchaObj.verify()
-        }).onSuccess(async() => {
-          // 人机交互验证通过
-          const {
-            geetest_challenge: challenge,
-            geetest_seccode: seccode,
-            geetest_validate: validate } =
-                  captchaObj.getValidate()
-          // 发送短信
-          await this.$http({
-            method: 'GET',
-            url: `/sms/codes/${mobile}`,
-            params: {
-              challenge,
-              validate,
-              seccode
-            }
-          })
-          // 发送短信成功，开启倒计时效果
-          this.codeCountDown()
+        const data = await this.$http({
+          method: 'GET',
+          url: `/captchas/${mobile}`
         })
-      })
+
+        // const { data } = res.data
+        window.initGeetest({
+          // 以下配置参数来自服务端 SDK
+          gt: data.gt,
+          challenge: data.challenge,
+          offline: !data.success,
+          new_captcha: data.new_captcha,
+          product: 'bind' // 隐藏，直接弹出式
+        }, (captchaObj) => {
+          captchaObj.onReady(() => {
+            this.codeLoading = false
+            // 验证码ready之后才能调用verify方法显示验证码
+            captchaObj.verify()
+          }).onSuccess(async() => {
+            // 此段代码最好的做法是封装到一个函数里，在这里调用
+            try {
+              // 人机交互验证通过
+              const {
+                geetest_challenge: challenge,
+                geetest_seccode: seccode,
+                geetest_validate: validate } =
+                      captchaObj.getValidate()
+              // 发送短信
+              await this.$http({
+                method: 'GET',
+                url: `/sms/codes/${mobile}`,
+                params: {
+                  challenge,
+                  validate,
+                  seccode
+                }
+              })
+            } catch {
+              this.$message.error('获取验证码失败')
+              this.codeLoading = false
+            }
+            // 发送短信成功，开启倒计时效果
+            this.codeCountDown()
+          })
+        })
+      } catch {
+        this.$message.error('获取验证码失败')
+        this.codeLoading = false
+      }
     },
     // 验证码倒计时
     codeCountDown() {
