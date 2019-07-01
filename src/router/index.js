@@ -65,9 +65,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     // 判断：如果有登录信息，则不能去login页面
     if (userInfo) {
-      if (from.path === '/login') {
-        nprogress.done()
-      }
+      
     } else {
       console.log(3)
       // 如果没有登录信息，则去登录页面登录
@@ -77,9 +75,11 @@ router.beforeEach((to, from, next) => {
     // 若不处于登录页面的情况下
     // 如果有登录信息，不能去login页面
     if (userInfo) {
-      console.log(2)
       next()
     } else {
+      if (from.path === '/login') {
+        nprogress.done()
+      }
       // 如果没有登录信息，则必须去登录页面登录
       next({ path: '/login' })
       // window.location.reload()
