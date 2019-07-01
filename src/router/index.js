@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') {
     // 判断：如果有登录信息，则不能去login页面
     if (userInfo) {
-      
+
     } else {
       console.log(3)
       // 如果没有登录信息，则去登录页面登录
